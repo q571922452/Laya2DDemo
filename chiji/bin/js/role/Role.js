@@ -7,6 +7,7 @@ var Role = (function (_super) {
     __extends(Role, _super);
     function Role() {
         var _this = _super.call(this) || this;
+        _this.PF = Laya.Browser.window.PF;
         _this.intervalT = 100;
         _this.roleAni = new Laya.Animation();
         _this.roleAni.loadAtlas('res/atlas/head.atlas', Laya.Handler.create(_this, _this.loadRes));
@@ -24,6 +25,11 @@ var Role = (function (_super) {
         Laya.Animation.createFrames(this.aniUrl('t', 0), 't');
         //end
         this.roleAni.interval = 100;
+        this.nameTxt = new Laya.Text();
+        this.nameTxt.text = '我就是我';
+        this.addChild(this.nameTxt);
+        this.finder = new this.PF.AStarFinder({ allowDiagonal: true });
+        this.mapgrid = new this.PF.Grid(4800 / 25, 4800 / 25);
     };
     //返回地址
     Role.prototype.aniUrl = function (name, startIndex) {
@@ -41,6 +47,7 @@ var Role = (function (_super) {
         this.roleAni.play(0, true, state);
         this.stopX = this.x;
         this.stopY = this.y;
+        var path = this.finder.findPath(this.x, this.y, x, y, this.mapgrid);
         // Laya.Tween.to(this,{x:-x,y:-y},time,null,Laya.Handler.create(this,this.runComplete));
         Laya.timer.loop(this.intervalT, this, this.moveRole, [x, y, time], true);
     };
