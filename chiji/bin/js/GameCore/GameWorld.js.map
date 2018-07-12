@@ -1,0 +1,1 @@
+{"version":3,"file":"GameWorld.js","sourceRoot":"","sources":["../../../src/GameCore/GameWorld.ts"],"names":[],"mappings":"AAAA;IACI;IACA,CAAC;IACa,cAAI,GAAlB,UAAmB,QAAY,EAAC,SAAgB,EAAC,UAAiB;QAC9D,IAAI,CAAC,IAAI,CAAC,SAAS,EAAC,UAAU,CAAC,CAAC;QAEhC,KAAK;QAGL,IAAI,QAAQ,EAAE,CAAC;IACnB,CAAC;IACL,gBAAC;AAAD,CAAC,AAXD,IAWC"}
