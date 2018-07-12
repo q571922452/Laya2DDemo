@@ -54,8 +54,11 @@ var Role = (function (_super) {
             return;
         }
         var num = this.p.getTileDataByScreenPos(this.x + unitx, this.y + unity);
-        if (num != 30 && num != 15 && num != 10)
+        if (num != 30 && num != 15 && num != 10) {
+            this.stopRun();
             return;
+        }
+        ;
         this.x += unitx;
         this.y += unity;
         // console.log(this.x,this.y,x,y,'-----',unitx,unity,t);
