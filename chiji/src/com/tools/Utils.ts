@@ -23,6 +23,6 @@ class Utils{
         var py = targetY - nowY;
         var pathLenght = Math.sqrt(Math.pow(px,2)+Math.pow(py,2));
         // console.log(pathLenght);
-        return pathLenght*10;
+        return pathLenght/(4800/150)*1000;
     }
 }

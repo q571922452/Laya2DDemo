@@ -1,9 +1,6 @@
 class Role extends Laya.GridSprite{ 
     private roleAni:Laya.Animation;
     private nameTxt:Laya.Text;//名字
-    private PF:any = Laya.Browser.window.PF;
-    private finder:any;
-    private mapgrid:any;
     constructor(){
         super();
         this.roleAni = new Laya.Animation();
@@ -22,28 +19,8 @@ class Role extends Laya.GridSprite{
         //end
         this.roleAni.interval = 100;
         this.nameTxt = new Laya.Text();
-        this.nameTxt.text = '我就是我'
+        this.nameTxt.text = '我叫啥'
         this.addChild(this.nameTxt);
-
-        // this.finder = new this.PF.AStarFinder({allowDiagonal: true});
-        
-        // this.mapgrid = new this.PF.Grid(4800/25,4800/25);
-    }
-    //初始化数据
-    public initData(mapdata:Laya.TiledMap):void{
-        if(!this.p)this.p = this.parent as Laya.MapLayer;
-        this.finder = new this.PF.AStarFinder({allowDiagonal: true});
-        // this.p.get
-        mapdata.numColumnsTile;
-        mapdata.numRowsTile;
-        var numX = mapdata.width/mapdata.numColumnsTile;
-        var numY = mapdata.height/mapdata.numRowsTile;
-        this.mapgrid = new this.PF.Grid(numX,numY);
-        var i:number;var j:number;var value:number;
-        // for(){
-
-        // }
-
     }
 
     //返回地址
@@ -64,12 +41,11 @@ class Role extends Laya.GridSprite{
         this.roleAni.play(0,true,state);
         this.stopX = this.x;
         this.stopY = this.y;
-        var path:Array<any> = this.finder.findPath(this.x,this.y,x,y,this.mapgrid);
-        // Laya.Tween.to(this,{x:-x,y:-y},time,null,Laya.Handler.create(this,this.runComplete));
         Laya.timer.loop(this.intervalT,this,this.moveRole,[x,y,time],true);
     }
     private p:Laya.MapLayer;//父对象
     private moveRole(x:number,y:number,t:number):void{
+        if(!this.p) this.p = this.parent as Laya.MapLayer;
         this.tt += this.intervalT;
         var unitx:number = (x-this.stopX)/(t/this.intervalT);
         var unity:number = (y-this.stopY)/(t/this.intervalT);
@@ -85,7 +61,6 @@ class Role extends Laya.GridSprite{
         };
         this.x += unitx;
         this.y += unity;
-        // console.log(this.x,this.y,x,y,'-----',unitx,unity,t);
     }
     public stopRun():void{
         this.roleAni.stop();

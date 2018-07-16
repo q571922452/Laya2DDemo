@@ -7,7 +7,6 @@ var Role = (function (_super) {
     __extends(Role, _super);
     function Role() {
         var _this = _super.call(this) || this;
-        _this.PF = Laya.Browser.window.PF;
         _this.intervalT = 100;
         _this.roleAni = new Laya.Animation();
         _this.roleAni.loadAtlas('res/atlas/head.atlas', Laya.Handler.create(_this, _this.loadRes));
@@ -26,10 +25,8 @@ var Role = (function (_super) {
         //end
         this.roleAni.interval = 100;
         this.nameTxt = new Laya.Text();
-        this.nameTxt.text = '我就是我';
+        this.nameTxt.text = '我叫啥';
         this.addChild(this.nameTxt);
-        this.finder = new this.PF.AStarFinder({ allowDiagonal: true });
-        this.mapgrid = new this.PF.Grid(4800 / 25, 4800 / 25);
     };
     //返回地址
     Role.prototype.aniUrl = function (name, startIndex) {
@@ -41,17 +38,15 @@ var Role = (function (_super) {
     };
     //移动到某个位置 播放动作
     Role.prototype.runToWhere = function (x, y, state, time) {
-        if (!this.p)
-            this.p = this.parent;
         this.runComplete();
         this.roleAni.play(0, true, state);
         this.stopX = this.x;
         this.stopY = this.y;
-        var path = this.finder.findPath(this.x, this.y, x, y, this.mapgrid);
-        // Laya.Tween.to(this,{x:-x,y:-y},time,null,Laya.Handler.create(this,this.runComplete));
         Laya.timer.loop(this.intervalT, this, this.moveRole, [x, y, time], true);
     };
     Role.prototype.moveRole = function (x, y, t) {
+        if (!this.p)
+            this.p = this.parent;
         this.tt += this.intervalT;
         var unitx = (x - this.stopX) / (t / this.intervalT);
         var unity = (y - this.stopY) / (t / this.intervalT);
@@ -68,7 +63,6 @@ var Role = (function (_super) {
         ;
         this.x += unitx;
         this.y += unity;
-        // console.log(this.x,this.y,x,y,'-----',unitx,unity,t);
     };
     Role.prototype.stopRun = function () {
         this.roleAni.stop();

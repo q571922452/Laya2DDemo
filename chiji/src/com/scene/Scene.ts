@@ -30,13 +30,13 @@ class Scene extends gamefacede.GameMediator{
         // Laya.stage.on(Laya.Event.RESIZE,this,this.resize);
         this.resize();
         // console.log(this.mX,this.mY);
-        console.log(this.tiledMap.height,this.tiledMap.width);
+        // console.log(this.tiledMap.height,this.tiledMap.width);
         this.role = new Role();
         // Laya.stage.addChild(this.role);
         this.map0 = this.tiledMap.getLayerByIndex(0);
         this.map0.addChild(this.role);
         this.map0.showGridSprite(this.role);
-        this.role.initData(this.tiledMap);
+        // this.role.initData(this.tiledMap);
         // UImgr.instance.addObject(this.role);
         this.role.x = this.mX = Laya.Browser.width/2;
         this.role.y = this.mY = Laya.Browser.height/2;
@@ -62,7 +62,7 @@ class Scene extends gamefacede.GameMediator{
     }
     private resize():void{
         this.tiledMap.changeViewPort(this.mX,this.mY,Laya.Browser.width,Laya.Browser.height);
-        console.log(this.mX,this.mY,'-------')
+        // console.log(this.mX,this.mY,'-------')
     }
     private time:number = 0;//移动时间
     
