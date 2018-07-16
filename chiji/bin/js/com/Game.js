@@ -14,6 +14,7 @@ var Game = (function () {
         new UImgr(); //初始化ui
         gamefacede.Facade.registerMediator(new Scene());
         gamefacede.Facade.registerMediator(new JoystickMediator());
+        this.loadRes();
     };
     //加载资源
     Game.prototype.loadRes = function () {
@@ -21,7 +22,7 @@ var Game = (function () {
     };
     //加载资源成功
     Game.prototype.preLoadJsonCompelete = function () {
-        var arr2d = Laya.loader.getRes("res/atlas/GameUI/main.atlas");
+        var arr2d = Laya.loader.getRes(this.configRes);
         Laya.loader.load(arr2d, Laya.Handler.create(this, this.onPre2DLoaded));
     };
     //

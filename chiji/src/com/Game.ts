@@ -16,6 +16,7 @@ class Game{
         
         gamefacede.Facade.registerMediator(new Scene());
         gamefacede.Facade.registerMediator(new JoystickMediator());
+        this.loadRes();
     }
     //加载资源
     private loadRes():void{
@@ -23,7 +24,7 @@ class Game{
     }
     //加载资源成功
     private preLoadJsonCompelete():void{
-        var arr2d:any = Laya.loader.getRes("res/atlas/GameUI/main.atlas");
+        var arr2d:any = Laya.loader.getRes(this.configRes);
         Laya.loader.load(arr2d,Laya.Handler.create(this,this.onPre2DLoaded))
     }
     //
