@@ -17,12 +17,16 @@ var JoystickMediator = (function (_super) {
     JoystickMediator.prototype.showPanel = function () {
         this.joystick = new JoystickView(this.joystickmodel);
         this.joystick.on(JoystickEvent.MOVE_ROLE, this, this.moveRole);
+        this.joystick.on(JoystickEvent.STOP_ROLE, this, this.stopMove);
         // UImgr.instance.addObject(this.joystick);
         this.sendReq(SceneEvent.ADD_UI, [Scene.NAME], [this.joystick]);
     };
     //移动人物
     JoystickMediator.prototype.moveRole = function (rad) {
         this.sendReq(SceneEvent.MOVE_ROLE, [Scene.NAME], [rad]);
+    };
+    JoystickMediator.prototype.stopMove = function () {
+        this.sendReq(SceneEvent.STOP_MOVE, [Scene.NAME], []);
     };
     return JoystickMediator;
 }(gamefacede.GameMediator));

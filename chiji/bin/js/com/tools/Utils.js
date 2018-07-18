@@ -22,7 +22,29 @@ var Utils = (function () {
         var py = targetY - nowY;
         var pathLenght = Math.sqrt(Math.pow(px, 2) + Math.pow(py, 2));
         // console.log(pathLenght);
-        return pathLenght / (4800 / 150) * 1000;
+        return pathLenght * 30;
+    };
+    /**
+    * 在朝向上创建多个点，每个点相聚25像素
+    *sx:起点x
+    *sx:起点y
+    *angle:朝向
+    *segment:数量
+    *distance：距离
+    */
+    Utils.createDirectPath = function (sx, sy, angle, segment, distance) {
+        if (segment === void 0) { segment = 10; }
+        if (distance === void 0) { distance = 15; }
+        var path = [];
+        var radian = angle * Math.PI / 180;
+        for (var i = 1; i < segment; ++i) {
+            var directX = sx;
+            var directY = sy + distance * i;
+            var targetX = -(directY - sy) * Math.sin(radian) + sx;
+            var targetY = (directY - sy) * Math.cos(radian) + sy;
+            path.push(targetX, targetY);
+        }
+        return path;
     };
     return Utils;
 }());

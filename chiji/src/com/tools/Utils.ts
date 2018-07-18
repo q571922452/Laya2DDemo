@@ -23,6 +23,31 @@ class Utils{
         var py = targetY - nowY;
         var pathLenght = Math.sqrt(Math.pow(px,2)+Math.pow(py,2));
         // console.log(pathLenght);
-        return pathLenght/(4800/150)*1000;
+        return pathLenght*30;
     }
+
+
+    /**
+	* 在朝向上创建多个点，每个点相聚25像素
+	*sx:起点x
+	*sx:起点y
+	*angle:朝向
+	*segment:数量
+	*distance：距离
+	*/	
+	public static createDirectPath(sx:number,sy:number,angle:number,segment:number=10,distance:number=15):Array<number>
+	{
+		var path:Array<number>=[];
+		var radian=angle*Math.PI/180;
+		for(var i=1;i<segment;++i)
+		{	
+			var directX:number = sx;
+        	var directY:number = sy+distance*i;
+            var targetX:number = -(directY-sy)*Math.sin(radian)+sx;
+            var targetY:number = (directY-sy)*Math.cos(radian)+sy;
+			path.push(targetX,targetY);
+		}
+        return path;
+	}
+
 }

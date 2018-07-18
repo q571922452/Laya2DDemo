@@ -4,4 +4,6 @@ class SceneEvent{
 
     public static MOVE_ROLE:string = "move_role";//移动人物
 
+    public static STOP_MOVE:string = "stop_move";//停止移动
+
 }

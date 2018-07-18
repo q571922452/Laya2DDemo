@@ -26,7 +26,10 @@ var Scene = (function (_super) {
                 this.addUI(args);
                 break;
             case SceneEvent.MOVE_ROLE:
-                this.removeRole(args);
+                this.removeRole(args[0]);
+                break;
+            case SceneEvent.STOP_MOVE:
+                this.stopMove();
         }
     };
     Scene.prototype.createMap = function () {
@@ -149,6 +152,9 @@ var Scene = (function (_super) {
     //移动人物
     Scene.prototype.removeRole = function (rad) {
         this.role.removeRole(rad);
+    };
+    Scene.prototype.stopMove = function () {
+        this.role.stopRun();
     };
     return Scene;
 }(gamefacede.GameMediator));

@@ -57,30 +57,66 @@ var Role = (function (_super) {
             this.stopRun();
             return;
         }
-        var num = this.p.getTileDataByScreenPos(this.x + unitx, this.y + unity);
-        if (num != 30 && num != 15 && num != 10) {
-            this.stopRun();
-            return;
-        }
-        ;
         this.x += unitx;
         this.y += unity;
     };
     Role.prototype.stopRun = function () {
         this.roleAni.stop();
+        Laya.timer.clearAll(this);
+        Laya.Tween.clearAll(this);
+        this.tt = 0;
     };
     Role.prototype.runComplete = function () {
-        Laya.Tween.clearAll(this);
         this.stopRun();
         this.tt = 0;
     };
     Role.prototype.directPath = function (radian) {
         this.directRad = radian;
         this.modelAngle = radian * 180 / Math.PI - 90;
+        this.directGo();
     };
     //通过摇杆移动
     Role.prototype.removeRole = function (rad) {
+        if (!this.p)
+            this.p = this.parent;
         this.directPath(rad);
+    };
+    Role.prototype.directGo = function () {
+        var dpath = Utils.createDirectPath(this.x, this.y, this.modelAngle);
+        for (var i = 0; i < dpath.length; i += 2) {
+            //检查路径点是否在阻挡里
+            var dx = dpath[i];
+            var dy = dpath[i + 1];
+            if (!this.isWalkableAt(dx, dy)) {
+                //截断路径
+                dpath.length = i;
+                break;
+            }
+        }
+        var length = dpath.length;
+        // this.isDirectgo=true;
+        if (length > 0) {
+            //取最后一个点
+            var px = dpath[length - 2];
+            var py = dpath[length - 1];
+            // console.log(px,py,this.x,this.y);
+            // this.runToWhere(px,py);
+            var state = Utils.getDirection(this.x, this.y, px, py);
+            var t = Utils.getTime(this.x, this.y, dx, dy);
+            this.runToWhere(px, py, state, t);
+        }
+        else {
+            this.stopRun();
+        }
+    };
+    Role.prototype.isWalkableAt = function (dx, dy) {
+        var num = this.p.getTileDataByScreenPos(dx, dy);
+        if (num != 30 && num != 15 && num != 10)
+            return false;
+        return true;
+    };
+    //移动
+    Role.prototype.moveThis = function (x, y) {
     };
     return Role;
 }(Laya.GridSprite));

@@ -42,11 +42,6 @@ var JoystickView = (function (_super) {
             var rad = this.joystickRad();
             this.event(JoystickEvent.MOVE_ROLE, rad);
         }
-        // console.log(rad+"=========");
-        // this.jsModel.setDir(rad);
-        // Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onTouchMove);
-        // Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onTouchUp);
-        // Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.onTouchUp);
     };
     //移动
     JoystickView.prototype.moveImg = function (e) {
@@ -54,7 +49,7 @@ var JoystickView = (function (_super) {
             var rad = this.joystickRad();
             if (Math.abs(rad - this.deltaDegree) > 0.2) {
                 this.deltaDegree = rad;
-                console.log(this.deltaDegree + ' --------- --------- ');
+                this.event(JoystickEvent.MOVE_ROLE, rad);
             }
         }
     };
@@ -66,6 +61,7 @@ var JoystickView = (function (_super) {
             this.joystickImg.x = this.width / 2;
             this.joystickImg.y = this.height / 2;
             this.tweener = Laya.Tween.to(this.joystickImg, { x: this.initX, y: this.initY }, 200, Laya.Ease.circOut, Laya.Handler.create(this, function () { this.tweener = null; }));
+            this.event(JoystickEvent.STOP_ROLE);
         }
     };
     JoystickView.prototype.joystickRad = function () {

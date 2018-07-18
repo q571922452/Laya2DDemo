@@ -15,7 +15,10 @@ class Scene extends gamefacede.GameMediator{
                 this.addUI(args);
                 break;
             case SceneEvent.MOVE_ROLE:
-                this.removeRole(args);
+                this.removeRole(args[0]);
+                break;
+            case SceneEvent.STOP_MOVE:
+                this.stopMove();
         }
     }
     private _tiledMap:Laya.TiledMap;//当前地图
@@ -158,5 +161,8 @@ class Scene extends gamefacede.GameMediator{
     //移动人物
     private removeRole(rad:any):void{
         this.role.removeRole(rad);
+    }
+    private stopMove():void{
+        this.role.stopRun();
     }
 }

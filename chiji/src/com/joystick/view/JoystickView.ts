@@ -51,15 +51,6 @@ class JoystickView extends ui.main.JoystickUI{
             this.event(JoystickEvent.MOVE_ROLE,rad);
 
         }
-
-
-        
-        // console.log(rad+"=========");
-        // this.jsModel.setDir(rad);
-
-        // Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onTouchMove);
-        // Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onTouchUp);
-        // Laya.stage.on(Laya.Event.MOUSE_OUT, this, this.onTouchUp);
     }
     private deltaDegree:number = -1000;
     //移动
@@ -68,7 +59,7 @@ class JoystickView extends ui.main.JoystickUI{
             var rad:number = this.joystickRad();
             if(Math.abs(rad - this.deltaDegree) > 0.2){
                 this.deltaDegree = rad;
-                console.log(this.deltaDegree+' --------- --------- ');
+                this.event(JoystickEvent.MOVE_ROLE,rad);
             }
         }
     }
@@ -81,6 +72,7 @@ class JoystickView extends ui.main.JoystickUI{
             this.joystickImg.y = this.height / 2;
             this.tweener = Laya.Tween.to(this.joystickImg, {x: this.initX, y: this.initY},200, Laya.Ease.circOut,
                             Laya.Handler.create(this, function(): void {this.tweener = null;}));
+            this.event(JoystickEvent.STOP_ROLE);
        
         }
     }
