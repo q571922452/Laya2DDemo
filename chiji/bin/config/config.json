@@ -1,3 +1,4 @@
 [
-    {"url":"res/atlas/GameUI/main.atlas","type":"atlas"}
+    {"url":"res/atlas/main.atlas","type":"atlas"},
+    {"url":"res/atlas/comp.atlas","type":"atlas"}
 ]

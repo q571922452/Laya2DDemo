@@ -8,6 +8,8 @@ var Role = (function (_super) {
     function Role() {
         var _this = _super.call(this) || this;
         _this.intervalT = 100;
+        _this.directRad = 0;
+        _this.modelAngle = 0;
         _this.roleAni = new Laya.Animation();
         _this.roleAni.loadAtlas('res/atlas/head.atlas', Laya.Handler.create(_this, _this.loadRes));
         _this.pivot(16, 24);
@@ -15,7 +17,7 @@ var Role = (function (_super) {
     }
     //加载成功
     Role.prototype.loadRes = function () {
-        console.log("加载资源成功");
+        console.log("加载role资源");
         this.addChild(this.roleAni);
         //加载动画集
         Laya.Animation.createFrames(this.aniUrl('b', 0), 'b');
@@ -71,6 +73,14 @@ var Role = (function (_super) {
         Laya.Tween.clearAll(this);
         this.stopRun();
         this.tt = 0;
+    };
+    Role.prototype.directPath = function (radian) {
+        this.directRad = radian;
+        this.modelAngle = radian * 180 / Math.PI - 90;
+    };
+    //通过摇杆移动
+    Role.prototype.removeRole = function (rad) {
+        this.directPath(rad);
     };
     return Role;
 }(Laya.GridSprite));

@@ -6,8 +6,19 @@ class Scene extends gamefacede.GameMediator{
         // Laya.stage.on(Laya.Event.MOUSE_DOWN,this,this.eventMove);
         // Laya.stage.on(Laya.Event.MOUSE_UP,this,this.savePoint);
     }
-
-    private tiledMap:Laya.TiledMap;//当前地图
+    /**
+     * 接受外部消息
+     */
+    public accpetReq(ReqName:string,args?:Array<any>):void{
+        switch(ReqName){
+            case SceneEvent.ADD_UI:
+                this.addUI(args);
+                break;
+            case SceneEvent.MOVE_ROLE:
+                this.removeRole(args);
+        }
+    }
+    private _tiledMap:Laya.TiledMap;//当前地图
     private mX:number;
     private mY:number;
 
@@ -15,15 +26,16 @@ class Scene extends gamefacede.GameMediator{
 
     private createMap():void{
         this.mX = this.mY = 0;
-        this.tiledMap = new Laya.TiledMap();
+        this._tiledMap = new Laya.TiledMap();
         // this.tiledMap.autoCache = true;
         // this.tiledMap.autoCacheType = "normal";
         // this.tiledMap.antiCrack = true;
-        this.tiledMap.createMap("res/map/map.json", new Laya.Rectangle(0,0,Laya.Browser.width/2,Laya.Browser.height/2),new Laya.Handler(this,this.completeHandler));
+        this._tiledMap.createMap("res/map/map.json", new Laya.Rectangle(0,0,Laya.Browser.width/2,Laya.Browser.height/2),new Laya.Handler(this,this.completeHandler));
         
         Laya.stage.on(Laya.Event.MOUSE_DOWN,this,this.moveRole);
     }
     private zd:any;//阻挡
+    private _map0:Laya.MapLayer;
     //成功加载
     private completeHandler():void{
 
@@ -33,14 +45,21 @@ class Scene extends gamefacede.GameMediator{
         // console.log(this.tiledMap.height,this.tiledMap.width);
         this.role = new Role();
         // Laya.stage.addChild(this.role);
-        this.map0 = this.tiledMap.getLayerByIndex(0);
-        this.map0.addChild(this.role);
-        this.map0.showGridSprite(this.role);
+        this._map0 = this._tiledMap.getLayerByIndex(0);
+        this._map0.addChild(this.role);
+        this._map0.showGridSprite(this.role);
         // this.role.initData(this.tiledMap);
         // UImgr.instance.addObject(this.role);
         this.role.x = this.mX = Laya.Browser.width/2;
         this.role.y = this.mY = Laya.Browser.height/2;
-        
+
+        this.registerMed();
+    }
+    /**
+     * 注册Med
+     */
+    private registerMed():void{
+        gamefacede.Facade.registerMediator(new JoystickMediator());
     }
 
     private downX:number;
@@ -58,10 +77,10 @@ class Scene extends gamefacede.GameMediator{
         Laya.stage.off(Laya.Event.MOUSE_MOVE,this,this.moveMap);
     }
     private moveMap():void{
-        this.tiledMap.moveViewPort(this.mX + (Laya.stage.mouseX-this.downX),this.mY + (Laya.stage.mouseY-this.downY));
+        this._tiledMap.moveViewPort(this.mX + (Laya.stage.mouseX-this.downX),this.mY + (Laya.stage.mouseY-this.downY));
     }
     private resize():void{
-        this.tiledMap.changeViewPort(this.mX,this.mY,Laya.Browser.width,Laya.Browser.height);
+        this._tiledMap.changeViewPort(this.mX,this.mY,Laya.Browser.width,Laya.Browser.height);
         // console.log(this.mX,this.mY,'-------')
     }
     private time:number = 0;//移动时间
@@ -70,10 +89,11 @@ class Scene extends gamefacede.GameMediator{
     //存储地图块
     private tileTexS:Laya.TileTexSet[] = [];
     private tts:any[] = [];
-    private map0:Laya.MapLayer;
+    
     //移动角色
     private moveRole(e:Laya.Event):void{
-        var kNum:number = this.tiledMap.numColumnsTile * this.tiledMap.numRowsTile;
+        if(!(e.target instanceof Laya.Stage)) return;
+        var kNum:number = this._tiledMap.numColumnsTile * this._tiledMap.numRowsTile;
         // var p0 = this.map0.getTilePositionByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // var p1 = this.map0.getTileDataByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // console.log(p0,p1);
@@ -116,15 +136,27 @@ class Scene extends gamefacede.GameMediator{
             this.role.stopRun();
             return;
         };
-        this.tiledMap.moveViewPort(this.mX+unitx,this.mY+unity);
+        this._tiledMap.moveViewPort(this.mX+unitx,this.mY+unity);
         this.mX += unitx;
         this.mY += unity;
         // console.log(this.tiledMap.viewPortX,this.tiledMap.viewPortX,unitx,unity,this.tiledMap.x+unitx,this.tiledMap.y+unity,'  '+this.time);
     }
     private tweenView(x:number,y:number,t:number):void{
-        Laya.Tween.to(this.tiledMap,{x:x,y:x},t,null,Laya.Handler.create(this,this.createTween))
+        Laya.Tween.to(this._tiledMap,{x:x,y:x},t,null,Laya.Handler.create(this,this.createTween))
     }
     private createTween():void{
-        Laya.Tween.clearAll(this.tiledMap);
+        Laya.Tween.clearAll(this._tiledMap);
+    }
+    //添加摇杆
+    private addUI(arg:any):void{
+        if(arg && arg[0]){
+            this._map0.addChild(arg[0]);
+            this._map0.showGridSprite(arg[0]);
+            (arg[0] as JoystickView).top = Laya.Browser.height-(arg[0] as JoystickView).height;
+        }
+    }
+    //移动人物
+    private removeRole(rad:any):void{
+        this.role.removeRole(rad);
     }
 }

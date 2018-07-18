@@ -13,7 +13,9 @@ class UImgr{
     public removeUI(view:laya.ui.Component):void{
         view.dataSource = null;
         Laya.stage.removeChild(view);
+        // this.map.removeChild(view);
     }
+    private map:Laya.MapLayer;
     //添加对象到场景
     public addObject(obj:any):void{
         if(obj){

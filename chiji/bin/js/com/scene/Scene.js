@@ -17,13 +17,25 @@ var Scene = (function (_super) {
         // Laya.stage.on(Laya.Event.MOUSE_DOWN,this,this.eventMove);
         // Laya.stage.on(Laya.Event.MOUSE_UP,this,this.savePoint);
     }
+    /**
+     * 接受外部消息
+     */
+    Scene.prototype.accpetReq = function (ReqName, args) {
+        switch (ReqName) {
+            case SceneEvent.ADD_UI:
+                this.addUI(args);
+                break;
+            case SceneEvent.MOVE_ROLE:
+                this.removeRole(args);
+        }
+    };
     Scene.prototype.createMap = function () {
         this.mX = this.mY = 0;
-        this.tiledMap = new Laya.TiledMap();
+        this._tiledMap = new Laya.TiledMap();
         // this.tiledMap.autoCache = true;
         // this.tiledMap.autoCacheType = "normal";
         // this.tiledMap.antiCrack = true;
-        this.tiledMap.createMap("res/map/map.json", new Laya.Rectangle(0, 0, Laya.Browser.width / 2, Laya.Browser.height / 2), new Laya.Handler(this, this.completeHandler));
+        this._tiledMap.createMap("res/map/map.json", new Laya.Rectangle(0, 0, Laya.Browser.width / 2, Laya.Browser.height / 2), new Laya.Handler(this, this.completeHandler));
         Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.moveRole);
     };
     //成功加载
@@ -34,13 +46,20 @@ var Scene = (function (_super) {
         // console.log(this.tiledMap.height,this.tiledMap.width);
         this.role = new Role();
         // Laya.stage.addChild(this.role);
-        this.map0 = this.tiledMap.getLayerByIndex(0);
-        this.map0.addChild(this.role);
-        this.map0.showGridSprite(this.role);
+        this._map0 = this._tiledMap.getLayerByIndex(0);
+        this._map0.addChild(this.role);
+        this._map0.showGridSprite(this.role);
         // this.role.initData(this.tiledMap);
         // UImgr.instance.addObject(this.role);
         this.role.x = this.mX = Laya.Browser.width / 2;
         this.role.y = this.mY = Laya.Browser.height / 2;
+        this.registerMed();
+    };
+    /**
+     * 注册Med
+     */
+    Scene.prototype.registerMed = function () {
+        gamefacede.Facade.registerMediator(new JoystickMediator());
     };
     //出发移动监听
     Scene.prototype.eventMove = function () {
@@ -55,15 +74,17 @@ var Scene = (function (_super) {
         Laya.stage.off(Laya.Event.MOUSE_MOVE, this, this.moveMap);
     };
     Scene.prototype.moveMap = function () {
-        this.tiledMap.moveViewPort(this.mX + (Laya.stage.mouseX - this.downX), this.mY + (Laya.stage.mouseY - this.downY));
+        this._tiledMap.moveViewPort(this.mX + (Laya.stage.mouseX - this.downX), this.mY + (Laya.stage.mouseY - this.downY));
     };
     Scene.prototype.resize = function () {
-        this.tiledMap.changeViewPort(this.mX, this.mY, Laya.Browser.width, Laya.Browser.height);
+        this._tiledMap.changeViewPort(this.mX, this.mY, Laya.Browser.width, Laya.Browser.height);
         // console.log(this.mX,this.mY,'-------')
     };
     //移动角色
     Scene.prototype.moveRole = function (e) {
-        var kNum = this.tiledMap.numColumnsTile * this.tiledMap.numRowsTile;
+        if (!(e.target instanceof Laya.Stage))
+            return;
+        var kNum = this._tiledMap.numColumnsTile * this._tiledMap.numRowsTile;
         // var p0 = this.map0.getTilePositionByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // var p1 = this.map0.getTileDataByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // console.log(p0,p1);
@@ -106,16 +127,28 @@ var Scene = (function (_super) {
             return;
         }
         ;
-        this.tiledMap.moveViewPort(this.mX + unitx, this.mY + unity);
+        this._tiledMap.moveViewPort(this.mX + unitx, this.mY + unity);
         this.mX += unitx;
         this.mY += unity;
         // console.log(this.tiledMap.viewPortX,this.tiledMap.viewPortX,unitx,unity,this.tiledMap.x+unitx,this.tiledMap.y+unity,'  '+this.time);
     };
     Scene.prototype.tweenView = function (x, y, t) {
-        Laya.Tween.to(this.tiledMap, { x: x, y: x }, t, null, Laya.Handler.create(this, this.createTween));
+        Laya.Tween.to(this._tiledMap, { x: x, y: x }, t, null, Laya.Handler.create(this, this.createTween));
     };
     Scene.prototype.createTween = function () {
-        Laya.Tween.clearAll(this.tiledMap);
+        Laya.Tween.clearAll(this._tiledMap);
+    };
+    //添加摇杆
+    Scene.prototype.addUI = function (arg) {
+        if (arg && arg[0]) {
+            this._map0.addChild(arg[0]);
+            this._map0.showGridSprite(arg[0]);
+            arg[0].top = Laya.Browser.height - arg[0].height;
+        }
+    };
+    //移动人物
+    Scene.prototype.removeRole = function (rad) {
+        this.role.removeRole(rad);
     };
     return Scene;
 }(gamefacede.GameMediator));

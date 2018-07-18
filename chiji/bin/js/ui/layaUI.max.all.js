@@ -20,7 +20,7 @@ var ui;
             };
             return JoystickUI;
         }(View));
-        JoystickUI.uiView = { "type": "View", "props": { "width": 174, "height": 174 }, "child": [{ "type": "Image", "props": { "y": 87, "x": 87, "var": "joystickBgImg", "skin": "main/joystickBg.png", "anchorY": 0.5, "anchorX": 0.5 } }, { "type": "Image", "props": { "y": 89, "x": 85, "var": "joystickImg", "skin": "main/joystick.png", "anchorY": 0.5, "anchorX": 0.5 } }] };
+        JoystickUI.uiView = { "type": "View", "props": { "width": 174, "mouseThrough": false, "height": 174 }, "child": [{ "type": "Image", "props": { "y": 87, "x": 87, "var": "joystickBgImg", "skin": "main/joystickBg.png", "anchorY": 0.5, "anchorX": 0.5 } }, { "type": "Image", "props": { "y": 89, "x": 85, "var": "joystickImg", "skin": "main/joystick.png", "anchorY": 0.5, "anchorX": 0.5 } }] };
         main.JoystickUI = JoystickUI;
     })(main = ui.main || (ui.main = {}));
 })(ui || (ui = {}));

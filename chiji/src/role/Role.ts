@@ -9,7 +9,7 @@ class Role extends Laya.GridSprite{
     }
     //加载成功
     private loadRes():void{
-        console.log("加载资源成功");
+        console.log("加载role资源");
         this.addChild(this.roleAni);
         //加载动画集
         Laya.Animation.createFrames(this.aniUrl('b',0),'b');
@@ -71,4 +71,15 @@ class Role extends Laya.GridSprite{
         this.tt = 0;
     }
 
+    private directRad:number=0;
+    private modelAngle:number=0;
+    protected directPath(radian:number):void{
+        this.directRad = radian;
+        this.modelAngle = radian*180/Math.PI-90;
+    }
+    
+    //通过摇杆移动
+    public removeRole(rad:number):void{
+        this.directPath(rad)
+    }
 }

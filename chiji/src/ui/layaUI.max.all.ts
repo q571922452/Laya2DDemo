@@ -6,7 +6,7 @@ module ui.main {
 		public joystickBgImg:Laya.Image;
 		public joystickImg:Laya.Image;
 
-        public static  uiView:any ={"type":"View","props":{"width":174,"height":174},"child":[{"type":"Image","props":{"y":87,"x":87,"var":"joystickBgImg","skin":"main/joystickBg.png","anchorY":0.5,"anchorX":0.5}},{"type":"Image","props":{"y":89,"x":85,"var":"joystickImg","skin":"main/joystick.png","anchorY":0.5,"anchorX":0.5}}]};
+        public static  uiView:any ={"type":"View","props":{"width":174,"mouseThrough":false,"height":174},"child":[{"type":"Image","props":{"y":87,"x":87,"var":"joystickBgImg","skin":"main/joystickBg.png","anchorY":0.5,"anchorX":0.5}},{"type":"Image","props":{"y":89,"x":85,"var":"joystickImg","skin":"main/joystick.png","anchorY":0.5,"anchorX":0.5}}]};
         constructor(){ super()}
         createChildren():void {
         

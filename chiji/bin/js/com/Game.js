@@ -7,27 +7,24 @@ var Game = (function () {
     }
     //初始化网络
     Game.prototype.initNET = function () {
-        this.registerAll();
+        this.loadRes();
     };
     //注册
     Game.prototype.registerAll = function () {
+        console.log("加载ui资源完成");
         new UImgr(); //初始化ui
         gamefacede.Facade.registerMediator(new Scene());
-        gamefacede.Facade.registerMediator(new JoystickMediator());
-        this.loadRes();
+        // this.loadRes();
     };
     //加载资源
     Game.prototype.loadRes = function () {
         Laya.loader.load([{ url: this.configRes, type: Laya.Loader.JSON }], Laya.Handler.create(this, this.preLoadJsonCompelete));
+        // Laya.loader.load(["res/atlas/main.atlas"],Laya.Handler.create(this,this.preLoadJsonCompelete));
     };
     //加载资源成功
     Game.prototype.preLoadJsonCompelete = function () {
         var arr2d = Laya.loader.getRes(this.configRes);
-        Laya.loader.load(arr2d, Laya.Handler.create(this, this.onPre2DLoaded));
-    };
-    //
-    Game.prototype.onPre2DLoaded = function () {
-        console.log("资源加载成功~~~~~~~~~~~~");
+        Laya.loader.load(arr2d, Laya.Handler.create(this, this.registerAll));
     };
     return Game;
 }());

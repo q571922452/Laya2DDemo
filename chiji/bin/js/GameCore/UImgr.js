@@ -17,6 +17,7 @@ var UImgr = (function () {
     UImgr.prototype.removeUI = function (view) {
         view.dataSource = null;
         Laya.stage.removeChild(view);
+        // this.map.removeChild(view);
     };
     //添加对象到场景
     UImgr.prototype.addObject = function (obj) {
