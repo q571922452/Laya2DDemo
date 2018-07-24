@@ -12,6 +12,7 @@ var Scene = (function (_super) {
         //存储地图块
         _this.tileTexS = [];
         _this.tts = [];
+        _this.tt = 0; //时间
         _this.createMap();
         return _this;
         // Laya.stage.on(Laya.Event.MOUSE_DOWN,this,this.eventMove);
@@ -43,7 +44,7 @@ var Scene = (function (_super) {
     };
     //成功加载
     Scene.prototype.completeHandler = function () {
-        // Laya.stage.on(Laya.Event.RESIZE,this,this.resize);
+        Laya.stage.on(Laya.Event.RESIZE, this, this.resize);
         this.resize();
         // console.log(this.mX,this.mY);
         // console.log(this.tiledMap.height,this.tiledMap.width);
@@ -52,10 +53,8 @@ var Scene = (function (_super) {
         this._map0 = this._tiledMap.getLayerByIndex(0);
         this._map0.addChild(this.role);
         this._map0.showGridSprite(this.role);
-        // this.role.initData(this.tiledMap);
-        // UImgr.instance.addObject(this.role);
-        this.role.x = this.mX = Laya.Browser.width / 2;
-        this.role.y = this.mY = Laya.Browser.height / 2;
+        this.role.x = Laya.Browser.width / 2;
+        this.role.y = Laya.Browser.height / 2;
         this.registerMed();
     };
     /**
@@ -81,13 +80,15 @@ var Scene = (function (_super) {
     };
     Scene.prototype.resize = function () {
         this._tiledMap.changeViewPort(this.mX, this.mY, Laya.Browser.width, Laya.Browser.height);
-        // console.log(this.mX,this.mY,'-------')
     };
     //移动角色
     Scene.prototype.moveRole = function (e) {
         if (!(e.target instanceof Laya.Stage))
             return;
         var kNum = this._tiledMap.numColumnsTile * this._tiledMap.numRowsTile;
+        var po = this.role.globalToLocal(new Laya.Point(e.target.mouseX, e.target.mouseY), false);
+        var po1 = this.role.globalToLocal(new Laya.Point(this._tiledMap.x, this._tiledMap.y), false);
+        // console.log(po,this.role.x,this.role.y,po1);
         // var p0 = this.map0.getTilePositionByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // var p1 = this.map0.getTileDataByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // console.log(p0,p1);
@@ -133,7 +134,6 @@ var Scene = (function (_super) {
         this._tiledMap.moveViewPort(this.mX + unitx, this.mY + unity);
         this.mX += unitx;
         this.mY += unity;
-        // console.log(this.tiledMap.viewPortX,this.tiledMap.viewPortX,unitx,unity,this.tiledMap.x+unitx,this.tiledMap.y+unity,'  '+this.time);
     };
     Scene.prototype.tweenView = function (x, y, t) {
         Laya.Tween.to(this._tiledMap, { x: x, y: x }, t, null, Laya.Handler.create(this, this.createTween));
@@ -151,10 +151,34 @@ var Scene = (function (_super) {
     };
     //移动人物
     Scene.prototype.removeRole = function (rad) {
-        this.role.removeRole(rad);
+        var p = this.role.removeRole(rad);
+        this.lastX = this.mX;
+        this.lastY = this.mY;
+        var p1 = this.role.globalToLocal(p, false);
+        this.changeViewPortXY(p1.x, p1.y);
+    };
+    //修改mx
+    Scene.prototype.changeViewPortXY = function (x, y) {
+        var t = Utils.getTime(this.role.x, this.role.y, x, y);
+        this.tt = 0;
+        Laya.timer.loop(100, this, this.setmXmY, [x, y, t], true);
+    };
+    Scene.prototype.setmXmY = function (x, y, t) {
+        this.tt += 100;
+        var unitx = (x - this.lastX) / (t / 100);
+        var unity = (y - this.lastY) / (t / 100);
+        if (this.tt > t) {
+            Laya.timer.clearAll(this);
+            return;
+        }
+        this.mX += unitx;
+        this.mY += unity;
+        console.log(unitx, unity, 'viewPort', x - this.lastX, y - this.lastY);
+        this._tiledMap.moveViewPort(this.mX, this.mY);
     };
     Scene.prototype.stopMove = function () {
         this.role.stopRun();
+        Laya.timer.clearAll(this);
     };
     return Scene;
 }(gamefacede.GameMediator));

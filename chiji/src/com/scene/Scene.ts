@@ -22,8 +22,8 @@ class Scene extends gamefacede.GameMediator{
         }
     }
     private _tiledMap:Laya.TiledMap;//当前地图
-    private mX:number;
-    private mY:number;
+    public mX:number;
+    public mY:number;
 
     private role:Role;//英雄
 
@@ -42,7 +42,7 @@ class Scene extends gamefacede.GameMediator{
     //成功加载
     private completeHandler():void{
 
-        // Laya.stage.on(Laya.Event.RESIZE,this,this.resize);
+        Laya.stage.on(Laya.Event.RESIZE,this,this.resize);
         this.resize();
         // console.log(this.mX,this.mY);
         // console.log(this.tiledMap.height,this.tiledMap.width);
@@ -51,10 +51,8 @@ class Scene extends gamefacede.GameMediator{
         this._map0 = this._tiledMap.getLayerByIndex(0);
         this._map0.addChild(this.role);
         this._map0.showGridSprite(this.role);
-        // this.role.initData(this.tiledMap);
-        // UImgr.instance.addObject(this.role);
-        this.role.x = this.mX = Laya.Browser.width/2;
-        this.role.y = this.mY = Laya.Browser.height/2;
+        this.role.x = Laya.Browser.width/2;
+        this.role.y = Laya.Browser.height/2;
 
         this.registerMed();
     }
@@ -84,7 +82,6 @@ class Scene extends gamefacede.GameMediator{
     }
     private resize():void{
         this._tiledMap.changeViewPort(this.mX,this.mY,Laya.Browser.width,Laya.Browser.height);
-        // console.log(this.mX,this.mY,'-------')
     }
     private time:number = 0;//移动时间
     
@@ -97,6 +94,9 @@ class Scene extends gamefacede.GameMediator{
     private moveRole(e:Laya.Event):void{
         if(!(e.target instanceof Laya.Stage)) return;
         var kNum:number = this._tiledMap.numColumnsTile * this._tiledMap.numRowsTile;
+        var po = this.role.globalToLocal(new Laya.Point(e.target.mouseX,e.target.mouseY),false);
+        var po1 = this.role.globalToLocal(new Laya.Point(this._tiledMap.x,this._tiledMap.y),false);
+        // console.log(po,this.role.x,this.role.y,po1);
         // var p0 = this.map0.getTilePositionByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // var p1 = this.map0.getTileDataByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // console.log(p0,p1);
@@ -142,7 +142,6 @@ class Scene extends gamefacede.GameMediator{
         this._tiledMap.moveViewPort(this.mX+unitx,this.mY+unity);
         this.mX += unitx;
         this.mY += unity;
-        // console.log(this.tiledMap.viewPortX,this.tiledMap.viewPortX,unitx,unity,this.tiledMap.x+unitx,this.tiledMap.y+unity,'  '+this.time);
     }
     private tweenView(x:number,y:number,t:number):void{
         Laya.Tween.to(this._tiledMap,{x:x,y:x},t,null,Laya.Handler.create(this,this.createTween))
@@ -158,11 +157,38 @@ class Scene extends gamefacede.GameMediator{
             (arg[0] as JoystickView).top = Laya.Browser.height-(arg[0] as JoystickView).height;
         }
     }
+    private lastX:number;
+    private lastY:number;
     //移动人物
     private removeRole(rad:any):void{
-        this.role.removeRole(rad);
+        var p = this.role.removeRole(rad);
+        this.lastX = this.mX;
+        this.lastY = this.mY;
+        var p1:Laya.Point = this.role.globalToLocal(p,false);
+        this.changeViewPortXY(p1.x,p1.y);
+    }
+    //修改mx
+    private changeViewPortXY(x:number,y:number):void{
+        var t = Utils.getTime(this.role.x,this.role.y,x,y);
+        this.tt = 0;
+        Laya.timer.loop(100,this,this.setmXmY,[x,y,t],true);
+    }
+    private tt:number = 0;//时间
+    private setmXmY(x:number,y:number,t:number):void{
+        this.tt += 100;
+        var unitx:number = (x-this.lastX)/(t/100);
+        var unity:number = (y-this.lastY)/(t/100);
+        if(this.tt > t){
+            Laya.timer.clearAll(this);
+            return;
+        }
+        this.mX += unitx;
+        this.mY += unity;
+        console.log(unitx,unity,'viewPort',x-this.lastX,y-this.lastY);
+        this._tiledMap.moveViewPort(this.mX,this.mY);
     }
     private stopMove():void{
         this.role.stopRun();
+        Laya.timer.clearAll(this);
     }
 }

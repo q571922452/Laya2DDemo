@@ -21,7 +21,6 @@ class Game{
     //加载资源
     private loadRes():void{
         Laya.loader.load([{url:this.configRes,type:Laya.Loader.JSON}],Laya.Handler.create(this,this.preLoadJsonCompelete));
-        // Laya.loader.load(["res/atlas/main.atlas"],Laya.Handler.create(this,this.preLoadJsonCompelete));
     }
     //加载资源成功
     private preLoadJsonCompelete():void{

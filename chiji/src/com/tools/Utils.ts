@@ -40,7 +40,7 @@ class Utils{
 		var path:Array<number>=[];
 		var radian=angle*Math.PI/180;
 		for(var i=1;i<segment;++i)
-		{	
+		{
 			var directX:number = sx;
         	var directY:number = sy+distance*i;
             var targetX:number = -(directY-sy)*Math.sin(radian)+sx;

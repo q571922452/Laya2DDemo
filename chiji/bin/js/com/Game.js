@@ -19,7 +19,6 @@ var Game = (function () {
     //加载资源
     Game.prototype.loadRes = function () {
         Laya.loader.load([{ url: this.configRes, type: Laya.Loader.JSON }], Laya.Handler.create(this, this.preLoadJsonCompelete));
-        // Laya.loader.load(["res/atlas/main.atlas"],Laya.Handler.create(this,this.preLoadJsonCompelete));
     };
     //加载资源成功
     Game.prototype.preLoadJsonCompelete = function () {

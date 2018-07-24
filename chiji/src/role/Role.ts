@@ -54,6 +54,7 @@ class Role extends Laya.GridSprite{
             this.stopRun();
             return;
         }
+        console.log(unitx,unity,'move_role',x-this.stopX,y-this.stopY);
         this.x += unitx;
         this.y += unity;
     }
@@ -78,11 +79,14 @@ class Role extends Laya.GridSprite{
     }
     
     //通过摇杆移动
-    public removeRole(rad:number):void{
+    public removeRole(rad:number):Laya.Point{
         if(!this.p) this.p = this.parent as Laya.MapLayer;
         this.directPath(rad)
+        return (new Laya.Point(this.moveX,this.moveY))
     }
 
+    private moveX:number;
+    private moveY:number;
     private directGo():void{
         var dpath:Array<number>=Utils.createDirectPath(this.x,this.y,this.modelAngle);
         for(var i=0;i<dpath.length;i+=2)
@@ -98,16 +102,15 @@ class Role extends Laya.GridSprite{
             }
         }
         var length:number = dpath.length;
-        // this.isDirectgo=true;
         if(length>0)
         {
             //取最后一个点
             var px:number = dpath[length-2];
             var py:number = dpath[length-1];
-            // console.log(px,py,this.x,this.y);
-            // this.runToWhere(px,py);
             var state = Utils.getDirection(this.x,this.y,px,py);
             var t = Utils.getTime(this.x,this.y,dx,dy);
+            this.moveX = px;
+            this.moveY = py;
             this.runToWhere(px,py,state,t);
         }else{
             this.stopRun();
@@ -120,8 +123,5 @@ class Role extends Laya.GridSprite{
             return false;
         return true;
     }
-    //移动
-    private moveThis(x:number,y:number):void{
 
-    }
 }
