@@ -54,7 +54,7 @@ class Role extends Laya.GridSprite{
             this.stopRun();
             return;
         }
-        console.log(unitx,unity,'move_role',x-this.stopX,y-this.stopY);
+        console.log(unitx,unity,'role move path');
         this.x += unitx;
         this.y += unity;
     }

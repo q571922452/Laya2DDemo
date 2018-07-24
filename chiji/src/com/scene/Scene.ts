@@ -44,8 +44,6 @@ class Scene extends gamefacede.GameMediator{
 
         Laya.stage.on(Laya.Event.RESIZE,this,this.resize);
         this.resize();
-        // console.log(this.mX,this.mY);
-        // console.log(this.tiledMap.height,this.tiledMap.width);
         this.role = new Role();
         // Laya.stage.addChild(this.role);
         this._map0 = this._tiledMap.getLayerByIndex(0);
@@ -95,11 +93,11 @@ class Scene extends gamefacede.GameMediator{
         if(!(e.target instanceof Laya.Stage)) return;
         var kNum:number = this._tiledMap.numColumnsTile * this._tiledMap.numRowsTile;
         var po = this.role.globalToLocal(new Laya.Point(e.target.mouseX,e.target.mouseY),false);
-        var po1 = this.role.globalToLocal(new Laya.Point(this._tiledMap.x,this._tiledMap.y),false);
-        // console.log(po,this.role.x,this.role.y,po1);
+        var pa = this.role.globalToLocal(new Laya.Point(this._tiledMap.x,this._tiledMap.y),false);
+        // var aaa = this._tiledMap.getTileProperties(1,1,'zd');
+        // var bbb = this._tiledMap.getMapProperties('zd');
         // var p0 = this.map0.getTilePositionByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // var p1 = this.map0.getTileDataByScreenPos(e.currentTarget.mouseX,e.currentTarget.mouseY);
-        // console.log(p0,p1);
         // var b = this.tiledMap.getLayerObject('Phy','zd');
         // for(var i = 0; i < kNum; ++i){
         //     if(this.tiledMap.getTexture(i)){
@@ -113,16 +111,13 @@ class Scene extends gamefacede.GameMediator{
         //             this.tts.push({value:this.map0.getTileData(x,y),x:x,y:y});
         //     }
         // }
-        // console.log(this.tileTexS,this.tts);
         this.time = 0;
         var state = Utils.getDirection(this.role.x,this.role.y,e.currentTarget.mouseX,e.currentTarget.mouseY);
         var t = Utils.getTime(this.role.x,this.role.y,e.currentTarget.mouseX,e.currentTarget.mouseY);
-        // console.log(this.role.x,this.role.y,"------",e.currentTarget.mouseX,e.currentTarget.mouseY);
         this.role.runToWhere(e.currentTarget.mouseX,e.currentTarget.mouseY,state,t);
         // Laya.timer.loop(this.intervalT,this,this.moveView,[t,e.currentTarget.mouseX-this.role.x,e.currentTarget.mouseY-this.role.y]);
         // this.tiledMap.moveViewPort(e.currentTarget.mouseX,e.currentTarget.mouseY);
         // this.tweenView(e.currentTarget.mouseX-this.tiledMap.x,e.currentTarget.mouseY-this.tiledMap.y,t);
-        // console.log(e.currentTarget.mouseX,e.currentTarget.mouseY,Laya.Browser.width,Laya.Browser.height);
         // var viewX = e.currentTarget.mouseX - Laya.Browser.width/2;
         // var viewY = e.currentTarget.mouseY - Laya.Browser.height/2;
         // this.tiledMap.moveViewPort(viewX,viewY);
@@ -184,8 +179,8 @@ class Scene extends gamefacede.GameMediator{
         }
         this.mX += unitx;
         this.mY += unity;
-        console.log(unitx,unity,'viewPort',x-this.lastX,y-this.lastY);
         this._tiledMap.moveViewPort(this.mX,this.mY);
+        console.log(this.mX,this.mY,'this is viewPort');
     }
     private stopMove():void{
         this.role.stopRun();
